@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Для Насти ♡</title>
+<style>
+*{box-sizing:border-box} body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#4a254b,#171326 70%);color:#fff;font-family:Georgia,'Times New Roman',serif;display:grid;place-items:center;padding:24px;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:radial-gradient(#ffffff55 1px,transparent 1px),radial-gradient(#f7b8d955 1px,transparent 1px);background-size:53px 53px,97px 97px;opacity:.5}
+.wrap{width:min(760px,100%);position:relative;text-align:center}.eyebrow{letter-spacing:.18em;text-transform:uppercase;font:12px Arial,sans-serif;color:#eeb9d8;opacity:.9}
+.book{position:relative;margin:22px auto 18px;min-height:410px;display:grid;place-items:center}
+.page{width:min(600px,100%);min-height:390px;padding:clamp(28px,6vw,55px);border:1px solid #ffffff30;border-radius:20px;background:linear-gradient(145deg,#fff9f5,#fce5f0);color:#5c3651;box-shadow:0 22px 80px #0006;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;animation:appear .35s ease}
+@keyframes appear{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.page:before{content:"";position:absolute;inset:12px;border:1px solid #d8a5c555;border-radius:13px;pointer-events:none}
+.heart{font-size:30px;color:#c76b9b;margin-bottom:18px}
+h1{font-size:clamp(28px,5vw,40px);font-weight:normal;margin:0 0 20px;line-height:1.25}
+.message{font-size:clamp(19px,3.5vw,24px);line-height:1.65;max-width:470px}
+.signature{font-style:italic;color:#9d5d86;margin-top:28px}
+.controls{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap}
+button{border:1px solid #f4c5dd;background:#fce7f2;color:#572c4c;padding:13px 20px;border-radius:999px;font-size:16px;cursor:pointer;transition:.2s}
+button:hover{transform:translateY(-2px);background:#fff}button:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.counter{font:14px Arial,sans-serif;color:#e7c6dc;min-width:78px}
+.tip{font:13px Arial,sans-serif;color:#d6b8ce;margin-top:17px}
+.spark{position:fixed;bottom:-20px;font-size:16px;opacity:.7;pointer-events:none;animation:float 7s linear infinite}
+@keyframes float{to{transform:translateY(-110vh) rotate(20deg);opacity:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="eyebrow">маленькая книжка для Насти</div>
+<div class="book"><article class="page" id="page"></article></div>
+<div class="controls">
+<button id="prev" aria-label="Предыдущая страница">← Назад</button>
+<span class="counter" id="counter"></span>
+<button id="next">Дальше →</button>
+</div>
+<div class="tip">Листай в своём темпе ♡</div>
+</div>
+<script>
+const compliments = [
+"Твоя улыбка умеет делать даже обычный день чуточку светлее.",
+"В тебе есть особенное очарование, которое не объяснить словами.",
+"Ты прекрасна не только внешне — в тебе есть что-то по-настоящему тёплое.",
+"Мне кажется, у твоего смеха есть талант поднимать настроение.",
+"Ты заслуживаешь комплиментов не только по праздникам, а каждый день.",
+"Твоя индивидуальность — одна из самых красивых вещей в тебе.",
+"Ты можешь не замечать этого, но в тебе столько света.",
+"Даже просто быть собой — у тебя получается красиво.",
+"Ты достойна заботы, уважения и искреннего внимания.",
+"Твои глаза словно умеют рассказывать истории без слов.",
+"Не обязательно быть идеальной, чтобы быть удивительной. Ты уже удивительная.",
+"В тебе есть нежность, которую хочется беречь.",
+"Надеюсь, у тебя будет больше поводов улыбаться, чем поводов грустить.",
+"Ты заслуживаешь людей, рядом с которыми можно быть собой.",
+"Есть красота в твоих маленьких привычках и деталях.",
+"Ты — не чья-то копия, и это делает тебя особенной.",
+"Твоё присутствие может быть подарком, даже если ты этого не осознаёшь.",
+"Мне хочется, чтобы ты чаще видела себя глазами тех, кто ценит тебя.",
+"Ты заслуживаешь самых добрых слов — и не только на этих страницах.",
+"Твоя улыбка — маленькое чудо, которое совсем не обязано быть громким.",
+"В тебе можно восхищаться гораздо большим, чем просто красотой.",
+"Пусть у тебя всегда будет место, где спокойно, уютно и безопасно.",
+"Ты достойна любви, которая не заставляет сомневаться в себе.",
+"Твоя мягкость — не слабость, а прекрасная часть твоего характера.",
+"Пусть мечты, которые ты бережёшь, однажды станут твоей реальностью.",
+"Ты умеешь быть красивой даже в самых обычных, неприметных моментах.",
+"Не забывай: твои чувства, желания и границы тоже важны.",
+"Пусть каждый новый день напоминает тебе, что жизнь может быть доброй.",
+"Ты заслуживаешь искренности, а не обещаний на ветер.",
+"Если сегодня тебе никто не сказал ничего приятного — пусть эта страница станет таким напоминанием."
+];
+const pageEl=document.getElementById('page'), counter=document.getElementById('counter'), prev=document.getElementById('prev'), next=document.getElementById('next');
+let current=0;
+function render(){
+  if(current===31){
+    pageEl.innerHTML=`<div class="heart">♡</div><h1>И напоследок…</h1><div class="message">Если ты дошла до этой страницы, значит, прочитала все мои маленькие слова. И всё же ни одна страница не смогла бы рассказать, насколько ты особенная.<br><br>Я не знаю, что принесёт нам будущее, и не хочу торопить его. Просто мне хотелось сделать для тебя что-то тёплое — напомнить, что ты заслуживаешь искренних улыбок, заботы и счастья. Надеюсь, эта маленькая книжка хотя бы на мгновение сделала твой день лучше.<br><br>И пусть это будет не последняя улыбка, которую я смог тебе подарить.</div><div class="signature">— Мирослав ♡</div>`;
+  } else {
+    pageEl.innerHTML=`<div class="heart">♡</div><h1>Настя, ты прекрасна</h1><div class="message">${compliments[current]}</div><div class="signature">Тебе — с теплом</div>`;
+  }
+  counter.textContent=`${current+1} / 31`;prev.disabled=current===0;next.textContent=current===30?"К последней странице →":"Дальше →"; 
+}
+prev.onclick=()=>{if(current>0){current--;render()}};
+next.onclick=()=>{if(current<31){current++;render()}};
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'&&current<31){current++;render()}if(e.key==='ArrowLeft'&&current>0){current--;render()}});
+render();
+for(let i=0;i<12;i++){let s=document.createElement('span');s.className='spark';s.textContent=['♡','✦','♥'][i%3];s.style.left=(i*8+3)+'%';s.style.animationDelay=(i*.55)+'s';s.style.animationDuration=(6+i%4)+'s';document.body.appendChild(s)}
+</script>
+</body></html>
